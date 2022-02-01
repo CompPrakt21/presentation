@@ -1,0 +1,51 @@
+% !TeX spellcheck = en_EN
+%% Beispiel-Präsentation mit LaTeX Beamer im KIT-Design
+%% entsprechend den Gestaltungsrichtlinien vom 1. August 2020
+%%
+%% Siehe https://sdqweb.ipd.kit.edu/wiki/Dokumentvorlagen
+
+%% Beispiel-Präsentation
+\documentclass[en,16:9]{sdqbeamer} 
+ 
+%% Titelbild
+\titleimage{banner_2020_kit}
+
+%% Gruppenlogo
+\grouplogo{} 
+
+%% Gruppenname
+\groupname{Compilerpraktikum - Abschlusspräsentation}
+
+% Beginn der Präsentation
+
+\title[]{Compilerpraktikum - Abschlusspräsentation}
+\subtitle{Gruppe 5} 
+\author[]{Achim Kriso, Marc Huisinga, Erik Kristiansen, Philipp Schaback}
+
+\date[10.\,2.\,2022]{10. Februar 2022}
+
+% Literatur 
+ 
+\usepackage[citestyle=authoryear,bibstyle=numeric,hyperref,backend=biber]{biblatex}
+\addbibresource{presentation.bib}
+\bibhang1em
+
+\begin{document}
+
+%Titelseite
+\KITtitleframe
+
+\begin{frame}{TODO}
+\end{frame}
+
+\appendix
+\beginbackup
+
+\begin{frame}{References}
+\printbibliography
+\end{frame}
+
+
+\backupend
+
+\end{document}
