@@ -1,0 +1,44 @@
+﻿\providecommand{\scale}{1}
+\usetikzlibrary {positioning,arrows.meta,backgrounds,fit,positioning}
+\begin{tikzpicture}[->,node distance=20mm,
+	terminal/.style={
+	% The shape:
+	rectangle,minimum size=6mm,rounded corners=3mm,
+	% The rest
+	draw=black,
+	font=\ttfamily},
+	el/.style={
+		midway,
+		above,
+	}]
+
+	\node (input) [terminal] {Input};
+	\node (ast) [terminal,right=of input] {AST};
+	\node (firm) [terminal,right=of ast] {\textsc{Firm}};
+	\node (llir) [terminal,below=of ast] {LLIR};
+	\node (sir) [terminal,below=of firm] {SIR};
+	\node (asm) [terminal,right=of sir] {Assembly};
+
+\draw
+	(input)	edge [el] node [] {} (ast)
+	(ast)	edge [el] node [] {} (firm)
+	(firm)	edge [el,out=-90,in=90] node [right] {instruction selection} (llir)
+	(llir)	edge [el] node [] {scheduling} (sir)
+	(sir)	edge [el,loop below] node [] {register allocation} (sir)
+			edge [el] node [] {} (asm);
+
+
+\begin{scope}[on background layer]
+\node [fill=black!10,inner sep=20,fit=(ast) (firm)] {};
+\node [fill=black!10,inner sep=26,fit=(llir) (sir)] {};
+\end{scope}
+
+% \draw [->] (input) 
+% 		-- (ast) node [el] {}
+% 		-- (firm) node [el] {}
+% 		-- (llir) [loop,below]
+% 		-- (llir) node [el,right] {instruction selection}
+% 		-- (sir) node [el] {scheduling}
+% 		-- (asm) node [el] {};
+\end{tikzpicture}
+\def\scale{1}

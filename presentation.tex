@@ -1,4 +1,4 @@
-% !TeX spellcheck = en_EN
+% !TeX spellcheck = en_US
 %% Beispiel-Präsentation mit LaTeX Beamer im KIT-Design
 %% entsprechend den Gestaltungsrichtlinien vom 1. August 2020
 %%
@@ -81,9 +81,12 @@
 \end{frame}
 
 \begin{frame}{Back End - Overview}
-	\begin{tikzpicture}[remember picture,overlay,shift=(current page.north west)]
-		
-	\end{tikzpicture}
+	\begin{figure}
+		\centering
+		%\vspace{-10px}
+		%\def\scale{0.7}
+		\input{tikz/compiler-overview.tikz}
+	\end{figure}
 \end{frame}
 
 \begin{frame}{Back End - LLIR}
