@@ -6,10 +6,13 @@
 	rectangle,minimum size=6mm,rounded corners=3mm,
 	% The rest
 	draw=black,
+	inner sep=15,
+	very thick,
 	font=\ttfamily},
 	el/.style={
 		midway,
 		above,
+		very thick,
 	}]
 
 	\node (input) [terminal] {Input};
@@ -22,7 +25,7 @@
 \draw
 	(input)	edge [el] node [] {} (ast)
 	(ast)	edge [el] node [] {} (firm)
-	(firm)	edge [el,out=-90,in=90] node [right] {instruction selection} (llir)
+	(firm)	edge [el,out=-90,in=90] node [right, above left] {instruction selection} (llir)
 	(llir)	edge [el] node [] {scheduling} (sir)
 	(sir)	edge [el,loop below] node [] {register allocation} (sir)
 			edge [el] node [] {} (asm);

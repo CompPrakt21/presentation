@@ -39,42 +39,71 @@
 %Titelseite
 \KITtitleframe
 
+\begin{frame}{Instruction Selection - Overview}
+	% Recap: What types of instruction selections are there. (Macro substitution, BUPM, DAG)
+\end{frame}
+
+\begin{frame}{Instruction Selection - Macro Substitution}
+\end{frame}
+
+\begin{frame}{Instruction Selection - Tree/DAG Matching}
+\end{frame}
+
+\begin{frame}{What we did:}
+	\begin{columns}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item Greedy pattern matching on firm graph
+				\item Matching on x86 address pattern
+				\item $Const + Base + Index * Scale$
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{figure}
+				\centering
+				\includegraphics[draft,width=\linewidth,height=5cm]{images/memory-match-firm-graph.png}
+			\end{figure}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{Front End}
 	\begin{itemize}
 		\item Implemented Parser Recovery
-		\item Rust-style error messages
+		\item Rust-style Error Messages
 	\end{itemize}
 
 	\begin{figure}
 		\centering
-		\includegraphics[draft,width=\linewidth,height=5cm]{images/error_message.png}
+		\includegraphics{images/error_message.png}
 	\end{figure}
 \end{frame}
 
 \begin{frame}{Middle End}
 	\begin{columns}
-		\begin{column}{0.5\linewidth}
+		\begin{column}{0.4\linewidth}
 			\begin{itemize}
-				\item Constant Folding
+				\item Sparse Conditional Constant Propagation
 				\item Misc. Arithmetic Simplifications
-				\item Loop invariant code motion
+				\item Loop Invariant Code Motion
+				\item Common Subexpression Elimination
+				\item Function Inlining
+				\item Load/Store Optimization
 			\end{itemize}%
-			
+		\end{column}
+
+		\begin{column}{0.25\linewidth}
+			\vspace{-3em}
 			\begin{figure}
 				\centering
-				\includegraphics[draft,width=\linewidth,height=4cm]{images/optimization-before.png}
+				\includegraphics[scale=0.3]{images/optimization-before.png}
 			\end{figure}
 		\end{column}
-		\begin{column}{0.5\linewidth}
-			\begin{itemize}
-				\item Common Subexpression Elimination (CSE)
-				\item Function Inlining
-				\item (Load/Store optimization)
-			\end{itemize}
-		
+
+		\begin{column}{0.3\linewidth}
 			\begin{figure}
 				\centering
-				\includegraphics[draft,width=\linewidth,height=4cm]{images/optimization-after.png}
+				\includegraphics[scale=0.2]{images/optimization-after.png}
 			\end{figure}
 		\end{column}
 	\end{columns}
@@ -92,29 +121,42 @@
 \begin{frame}{Back End - LLIR}
 	\framesubtitle{Low-Level Intermediate Representation}
 	
-	\begin{itemize}
-		\item Graph-based
-		\item Nodes represent x86 instructions
-	\end{itemize}
+	\begin{columns}
+		\begin{column}{0.2\textwidth}
+			\begin{itemize}
+				\item Graph-based
+				\item Nodes represent x86 instructions
+			\end{itemize}
+		\end{column}
 
-	\begin{figure}
-		\centering
-		\includegraphics[draft,width=\linewidth,height=5cm]{images/llir-example.png}
-	\end{figure}
+		\begin{column}{0.5\textwidth}
+			\vspace{-3em}
+			\begin{figure}
+				\centering
+				\includegraphics[scale=0.3]{images/llir-example}
+			\end{figure}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{Back End - SIR}
 	\framesubtitle{Scheduled Intermediate Representation}
 	
-	\begin{itemize}
-		\item Includes scheduling information
-		\item Modified by peephole optimizer
-	\end{itemize}
+	\begin{columns}
+		\begin{column}{0.3\textwidth}
+			\begin{itemize}
+				\item Includes scheduling information
+				\item Modified by peephole optimizer
+			\end{itemize}
+		\end{column}
 	
-	\begin{figure}
-		\centering
-		\includegraphics[draft,width=\linewidth,height=5cm]{images/sir-example.png}
-	\end{figure}
+		\begin{column}{0.5\textwidth}
+			\begin{figure}
+				\centering
+				\includegraphics[scale=0.6]{images/sir-before-reg-alloc}
+			\end{figure}
+		\end{column}
+	\end{columns}
 	
 \end{frame}
 
@@ -123,7 +165,7 @@
 	
 	\begin{figure}
 		\centering
-		\includegraphics[draft,width=\linewidth,height=0.7\textheight]{images/sir-example.png}
+		\includegraphics[scale=0.5]{images/sir-after-reg-alloc}
 	\end{figure}
 	
 \end{frame}
