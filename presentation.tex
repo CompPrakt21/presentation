@@ -40,36 +40,101 @@
 \KITtitleframe
 
 \begin{frame}{Instruction Selection - Overview}
-	% Recap: What types of instruction selections are there. (Macro substitution, BUPM, DAG)
+	\begin{itemize}
+		\item Makrosubstitution
+		\begin{itemize}
+			\item Translate \emph{one} IR-instruction to one or more target instructions
+		\end{itemize}
+		\vspace{1em}
+		\item Bottom-Up Pattern Matching (BUPM)
+		\begin{itemize}
+			\item Apply tree patterns on IR
+			\item Choose the best combination using dynamic programming
+		\end{itemize}
+		\vspace{1em}
+		\item DAG Matching
+		\begin{itemize}
+			\item Apply DAG patterns on IR (greedy)
+		\end{itemize}
+	\end{itemize}
 \end{frame}
 
 \begin{frame}{Instruction Selection - Macro Substitution}
-\end{frame}
-
-\begin{frame}{Instruction Selection - Tree/DAG Matching}
-\end{frame}
-
-\begin{frame}{What we did:}
 	\begin{columns}
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item Greedy pattern matching on firm graph
-				\item Matching on x86 address pattern
-				\item $Const + Base + Index * Scale$
+				\item Generates instructions using simple rules.
+				\item Has very little context. (Can inspect inputs)
+				\vspace{3em}
+				\item \texttt{r3 <- mul r1 0x4}
+				\item \texttt{r4 <- add r2 r3}
+				\item \texttt{r5 <- load r4}
 			\end{itemize}
 		\end{column}
+
 		\begin{column}{0.5\textwidth}
 			\begin{figure}
 				\centering
-				\includegraphics[draft,width=\linewidth,height=5cm]{images/memory-match-firm-graph.png}
+				\includegraphics[scale=0.3]{images/instruction-selection.png}
 			\end{figure}
 		\end{column}
 	\end{columns}
 \end{frame}
 
+\begin{frame}{Instruction Selection - Tree/DAG Matching}
+	\begin{columns}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item Each target instruction is represented as an IR pattern.
+				\item BUPM finds optimal pattern for each node.
+				\item Optimal DAG Matching is in general NP-Complete.
+				\vspace{2em}
+				\item \texttt{r3 <- load [r2 + r1 * 0x4]}
+			\end{itemize}
+		\end{column}
+
+		\begin{column}{0.5\textwidth}
+			\begin{figure}
+				\centering
+				\includegraphics[scale=0.3]{images/instruction-selection.png}
+			\end{figure}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Instruction Selection - What we did:}
+	\begin{columns}
+		\begin{column}{0.4\textwidth}
+			\begin{itemize}
+				\item Greedy tree pattern matching on firm graph.
+				\item Matching on x86 address pattern and folding it into binary instruction.
+				\item $Const + Base + Index * Scale$
+				\vspace{2em}
+				\item \texttt{v4 <- add v1 [V2 + V3 * 4]}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.6\textwidth}
+			\vspace{-1em}
+			\begin{figure}
+				\centering
+				\includegraphics[scale=0.27]{images/memory-match-firm-graph.png}
+			\end{figure}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Our Compiler - Overview}
+	\begin{figure}
+		\centering
+		%\vspace{-10px}
+		%\def\scale{0.7}
+		\input{tikz/compiler-overview.tikz}
+	\end{figure}
+\end{frame}
+
 \begin{frame}{Front End}
 	\begin{itemize}
-		\item Implemented Parser Recovery
+		\item Implemented Parser Recovery (with Error Productions)
 		\item Rust-style Error Messages
 	\end{itemize}
 
@@ -109,31 +174,23 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Back End - Overview}
-	\begin{figure}
-		\centering
-		%\vspace{-10px}
-		%\def\scale{0.7}
-		\input{tikz/compiler-overview.tikz}
-	\end{figure}
-\end{frame}
-
 \begin{frame}{Back End - LLIR}
 	\framesubtitle{Low-Level Intermediate Representation}
 	
 	\begin{columns}
-		\begin{column}{0.2\textwidth}
+		\begin{column}{0.35\textwidth}
 			\begin{itemize}
-				\item Graph-based
+				\item Preserves firm dependencies
+				\item Not in SSA
 				\item Nodes represent x86 instructions
 			\end{itemize}
 		\end{column}
 
-		\begin{column}{0.5\textwidth}
+		\begin{column}{0.65\textwidth}
 			\vspace{-3em}
 			\begin{figure}
 				\centering
-				\includegraphics[scale=0.3]{images/llir-example}
+				\includegraphics[scale=0.26]{images/llir-example}
 			\end{figure}
 		\end{column}
 	\end{columns}
@@ -143,10 +200,9 @@
 	\framesubtitle{Scheduled Intermediate Representation}
 	
 	\begin{columns}
-		\begin{column}{0.3\textwidth}
+		\begin{column}{0.5\textwidth}
 			\begin{itemize}
 				\item Includes scheduling information
-				\item Modified by peephole optimizer
 			\end{itemize}
 		\end{column}
 	
@@ -163,21 +219,30 @@
 \begin{frame}{Back End - SIR}
 	\framesubtitle{Scheduled Intermediate Representation}
 	
-	\begin{figure}
-		\centering
-		\includegraphics[scale=0.5]{images/sir-after-reg-alloc}
-	\end{figure}
-	
+	\begin{columns}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item Global Register Allocator
+				\item Peephole Optimizer
+			\end{itemize}
+		\end{column}
+
+		\begin{column}{0.5\textwidth}
+			\begin{figure}
+				\centering
+				\includegraphics[scale=0.5]{images/sir-after-reg-alloc}
+			\end{figure}
+		\end{column}
+	\end{columns}
 \end{frame}
 
-\appendix
-\beginbackup
+%\appendix
+%\beginbackup
 
-\begin{frame}{References}
-\printbibliography
-\end{frame}
+%\begin{frame}{References}
+%\printbibliography
+%\end{frame}
 
-
-\backupend
+%\backupend
 
 \end{document}

@@ -24,7 +24,9 @@
 
 \draw
 	(input)	edge [el] node [] {} (ast)
+	(ast)	edge [el,loop above] node [] {semantic analysis} (ast)
 	(ast)	edge [el] node [] {} (firm)
+	(firm)	edge [el,loop above] node [] {optimizations} (firm)
 	(firm)	edge [el,out=-90,in=90] node [right, above left] {instruction selection} (llir)
 	(llir)	edge [el] node [] {scheduling} (sir)
 	(sir)	edge [el,loop below] node [] {register allocation} (sir)
