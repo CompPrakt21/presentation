@@ -9,6 +9,7 @@
 
 \usepackage{tikz}
 \usetikzlibrary{positioning,calc,arrows}
+\usepackage{pgf-pie}  
  
  
 %% Titelbild
@@ -41,20 +42,20 @@
 
 \begin{frame}{Instruction Selection - Overview}
 	\begin{itemize}
-		\item Makrosubstitution
+		\item Macro Substitution
 		\begin{itemize}
-			\item Translate \emph{one} IR-instruction to one or more target instructions
+			\item Translate one IR-instruction to one or more target instructions
 		\end{itemize}
 		\vspace{1em}
 		\item Bottom-Up Pattern Matching (BUPM)
 		\begin{itemize}
-			\item Apply tree patterns on IR
+			\item Apply tree patterns to IR
 			\item Choose the best combination using dynamic programming
 		\end{itemize}
 		\vspace{1em}
 		\item DAG Matching
 		\begin{itemize}
-			\item Apply DAG patterns on IR (greedy)
+			\item Apply DAG patterns to IR (greedy)
 		\end{itemize}
 	\end{itemize}
 \end{frame}
@@ -63,12 +64,12 @@
 	\begin{columns}
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item Generates instructions using simple rules.
-				\item Has very little context. (Can inspect inputs)
+				\item Generates instructions using simple rules
+				\item Has very little context (can inspect inputs)
 				\vspace{3em}
-				\item \texttt{r3 <- mul r1 0x4}
-				\item \texttt{r4 <- add r2 r3}
-				\item \texttt{r5 <- load r4}
+				\item \texttt{V3 <- mul V1 0x4}
+				\item \texttt{V4 <- add V2 V3}
+				\item \texttt{v5 <- load r4}
 			\end{itemize}
 		\end{column}
 
@@ -85,11 +86,11 @@
 	\begin{columns}
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item Each target instruction is represented as an IR pattern.
-				\item BUPM finds optimal pattern for each node.
-				\item Optimal DAG Matching is in general NP-Complete.
+				\item Each target instruction is represented as an IR pattern
+				\item BUPM finds optimal pattern for each node
+				\item Optimal DAG Matching is in general NP-Complete
 				\vspace{2em}
-				\item \texttt{r3 <- load [r2 + r1 * 0x4]}
+				\item \texttt{v3 <- load [V2 + V1 * 0x4]}
 			\end{itemize}
 		\end{column}
 
@@ -102,12 +103,12 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Instruction Selection - What we did:}
+\begin{frame}{Instruction Selection - Our Approach}
 	\begin{columns}
 		\begin{column}{0.4\textwidth}
 			\begin{itemize}
-				\item Greedy tree pattern matching on firm graph.
-				\item Matching on x86 address pattern and folding it into binary instruction.
+				\item Greedy tree pattern matching on firm graph
+				\item Match on x86 address pattern and fold it into binary instruction
 				\item $Const + Base + Index * Scale$
 				\vspace{2em}
 				\item \texttt{v4 <- add v1 [V2 + V3 * 4]}
@@ -132,10 +133,10 @@
 	\end{figure}
 \end{frame}
 
-\begin{frame}{Front End}
+\begin{frame}{Frontend}
 	\begin{itemize}
-		\item Implemented Parser Recovery (with Error Productions)
-		\item Rust-style Error Messages
+		\item Parser recovery (with extra error productions)
+		\item Rust-style error messages
 	\end{itemize}
 
 	\begin{figure}
@@ -144,16 +145,16 @@
 	\end{figure}
 \end{frame}
 
-\begin{frame}{Middle End}
+\begin{frame}{Middleend}
 	\begin{columns}
 		\begin{column}{0.4\linewidth}
 			\begin{itemize}
 				\item Sparse Conditional Constant Propagation
-				\item Misc. Arithmetic Simplifications
+				\item Misc. arithmetic simplifications
 				\item Loop Invariant Code Motion
 				\item Common Subexpression Elimination
-				\item Function Inlining
-				\item Load/Store Optimization
+				\item Function inlining
+				\item Load/Store optimization
 			\end{itemize}%
 		\end{column}
 
@@ -174,7 +175,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Back End - LLIR}
+\begin{frame}{Backend - LLIR}
 	\framesubtitle{Low-Level Intermediate Representation}
 	
 	\begin{columns}
@@ -196,13 +197,14 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Back End - SIR}
+\begin{frame}{Backend - SIR}
 	\framesubtitle{Scheduled Intermediate Representation}
 	
 	\begin{columns}
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
 				\item Includes scheduling information
+				\item Easier for register allocation
 			\end{itemize}
 		\end{column}
 	
@@ -216,14 +218,14 @@
 	
 \end{frame}
 
-\begin{frame}{Back End - SIR}
+\begin{frame}{Backend - SIR}
 	\framesubtitle{Scheduled Intermediate Representation}
 	
 	\begin{columns}
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item Global Register Allocator
-				\item Peephole Optimizer
+				\item Our own global register allocator algorithm
+				\item Peephole optimizer
 			\end{itemize}
 		\end{column}
 
@@ -234,6 +236,29 @@
 			\end{figure}
 		\end{column}
 	\end{columns}
+\end{frame}
+
+\begin{frame}{Compiler - Gruppe 5}
+	\vspace{-3em}
+	\begin{columns}
+		\begin{column}{0.3\textwidth}
+			\begin{itemize}
+				\item 21337 LOC
+				\item 402 commits
+			\end{itemize}
+		\end{column}
+
+		\begin{column}{0.5\textwidth}
+			\begin{tikzpicture}[scale=0.3]
+				\pie[hide number, text=pin]{42/{Frontend 8941}, 17/Middleend 3551, 37/Backend 7774, 4/Misc 874}
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+
+	\begin{figure}
+		\centering
+		\includegraphics[scale=0.3]{images/flamegraph_annotated}
+	\end{figure}
 \end{frame}
 
 %\appendix
